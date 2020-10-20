@@ -1,10 +1,10 @@
 # Project modules:
 1. mobile app
-    1.1. creating input data
-    1.2. refining the transformed image
+    1. creating input data
+    2. refining the transformed image
 2. image transformation module
-    2.1. model training
-    2.2. applying the model on the input
+    1. model training
+    2. applying the model on the input
 3. REST API
 
 # Requirements per modules:
