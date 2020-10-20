@@ -1,16 +1,16 @@
-# App modules:
+# Project modules:
 1. mobile app
     1.1. creating input data
     1.2. refining the transformed image
 2. image transformation module
     2.1. model training
     2.2. applying the model on the input
-3. REST service
+3. REST API
 
 # Requirements per modules:
 1. Research mobile app development (Flutter)
 2. Research state-of-the-art methods (GANs)
-3. Research deployment on Google App Cloud
+3. Research deployment on Google App Cloud / Firebase / AWS
 
 # Risk assesement
 1. Assigning fixed tasks per team member at the start of development: we might realize that a task requires a lot more time than another one. Solution: assign tasks per batches to keep flexibility within the development process. Using Trello for this.
