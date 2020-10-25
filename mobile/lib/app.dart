@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:monet_photos/image_transformer.dart';
 
 class MyApp extends StatelessWidget {
   @override
@@ -18,11 +19,8 @@ class MyApp extends StatelessWidget {
 class HomePage extends StatefulWidget {
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-  static const List<Widget> _widgetOptions = <Widget>[
-    Text(
-      'Index 0: Home',
-      style: optionStyle,
-    ),
+  static List<Widget> _widgetOptions = <Widget>[
+    ImageTransformer(),
     Text(
       'Index 1: Business',
       style: optionStyle,
@@ -44,9 +42,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
-      body: Center(
-        child: HomePage._widgetOptions.elementAt(_selectedIndex),
-      ),
+      body: HomePage._widgetOptions.elementAt(_selectedIndex),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
