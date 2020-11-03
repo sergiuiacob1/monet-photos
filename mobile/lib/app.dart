@@ -22,11 +22,11 @@ class HomePage extends StatefulWidget {
   static List<Widget> _widgetOptions = <Widget>[
     ImageTransformer(),
     Text(
-      'Index 1: Business',
+      'History',
       style: optionStyle,
     ),
     Text(
-      'Index 2: School',
+      'Settings',
       style: optionStyle,
     ),
   ];
@@ -46,16 +46,16 @@ class _HomePageState extends State<HomePage> {
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
+            icon: Icon(Icons.transform),
+            label: 'Transformer',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.business),
-            label: 'Business',
+            icon: Icon(Icons.history),
+            label: 'History',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.school),
-            label: 'School',
+            icon: Icon(Icons.settings),
+            label: 'Settings',
           ),
         ],
         onTap: _tapButton,
