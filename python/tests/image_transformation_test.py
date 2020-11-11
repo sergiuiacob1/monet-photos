@@ -2,6 +2,7 @@ import numpy as np
 from tests.test_utils import *
 from image_transformation import *
 from image_adapter import ImageAdapter
+from style_transfer.monet_style_transfer import MonetStyleTransfer
 
 
 def test_image_resize():
@@ -26,10 +27,8 @@ def test_image_to_array():
     assert network_input.shape == (256, 256, 3)
 
 
-def test_array_to_image():
-    network_output = np.random.rand(256, 256, 3) * 255
-    image_adapter = ImageAdapter()
-
-    image = image_adapter.array_to_image(network_output, "jpg")
-
-    assert image.shape[:2] == (256, 256)
+def test_style_transfer():
+    input_image = np.random.rand(256, 256, 3)
+    transformer = MonetStyleTransfer()
+    transformed = transformer.apply(input_image)
+    assert np.any(input_image != transformed)

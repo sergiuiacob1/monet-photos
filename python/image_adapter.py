@@ -1,5 +1,5 @@
 from image_transformation import *
-
+from cv2 import cv2
 
 class ImageAdapter:
     def image_to_array(self, image):
@@ -9,4 +9,4 @@ class ImageAdapter:
 
     def array_to_image(self, array, image_format):
         # takes the numpy array returned by the generator and constructs an image based on image_format (PNG, JPEG etc.)
-        pass
+        return cv2.cvtColor(array, cv2.COLOR_GRAY2BGR)

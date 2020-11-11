@@ -6,7 +6,7 @@ class MonetStyleTransfer(StyleTransferFactory):
     neural_network = {}
 
     def apply(self, image):
-        pass
+        return image
 
     def train(self, data_set):
         pass
