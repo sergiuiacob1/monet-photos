@@ -1,0 +1,5 @@
+{
+  "models": {
+    "monet": "./training/generated_models/monet/model.h5"
+  }
+}
