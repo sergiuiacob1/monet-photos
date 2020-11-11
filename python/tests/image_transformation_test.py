@@ -6,12 +6,12 @@ from image_adapter import ImageAdapter
 
 def test_image_resize():
     img = load_image("./tests/test_img.jpg")
-    width, height = img.shape
+    width, height, _ = img.shape
     assert width != 256
     assert height != 256
 
     resized_img = resize_image(img)
-    resized_width, resized_height = resized_img.shape
+    resized_width, resized_height, _ = resized_img.shape
 
     assert resized_width == 256
     assert resized_height == 256
@@ -27,7 +27,7 @@ def test_image_to_array():
 
 
 def test_array_to_image():
-    network_output = np.random.rand(256, 256, 3)
+    network_output = np.random.rand(256, 256, 3) * 255
     image_adapter = ImageAdapter()
 
     image = image_adapter.array_to_image(network_output, "jpg")
