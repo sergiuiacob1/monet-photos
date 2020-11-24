@@ -1,0 +1,5 @@
+{
+  "models": {
+    "monet": "./training/models/monet/model_when_ready.bin"
+  }
+}
