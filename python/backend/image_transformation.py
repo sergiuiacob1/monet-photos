@@ -27,7 +27,7 @@ def segment_image(image, size):
             y = j*size
             x1 = x+size
             y1 = y+size
-            rectangle = image[x:x1,y:y1]
+            rectangle = image[y:y1,x:x1]
 
             response[i].append(rectangle)
 
@@ -35,4 +35,4 @@ def segment_image(image, size):
 
 
 def reconstruct_image(image_segments, shape, size):
-    pass
+    
