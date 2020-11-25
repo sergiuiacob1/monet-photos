@@ -20,9 +20,10 @@ class ImageTransformer extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text(
-                "Monet",
-                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+              Text(
+                _getTextByState(state),
+                style:
+                    const TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
                 textAlign: TextAlign.center,
               ),
               ImageViewer(state),
@@ -33,6 +34,20 @@ class ImageTransformer extends StatelessWidget {
       ),
     );
   }
+
+  String _getTextByState(ImageTransformerState state) {
+    if (state is WaitingForImage) {
+      return "Monet - choose your image";
+    } else if (state is WaitingForTransformRequest) {
+      return "Monet – transform the image";
+    } else if (state is TransformingImage) {
+      return "Monet – transforming image";
+    } else if (state is TransformingFinished) {
+      return "Monet – transform successful";
+    }
+
+    return "Unknown state";
+  }
 }
 
 class ImageViewer extends StatelessWidget {
@@ -41,20 +56,62 @@ class ImageViewer extends StatelessWidget {
 
   Widget build(BuildContext context) {
     return Expanded(
-      child: (state is WaitingForTransformRequest)
-          ? FutureBuilder<Uint8List>(
-              builder: (context, imgBytes) {
-                if (imgBytes.hasData) {
-                  return Image.memory(imgBytes.data);
-                }
-                return Expanded(child: CircularProgressIndicator());
-              },
-              future: state.img.readAsBytes(),
-              initialData: null,
-            )
-          : Container(
-              decoration: BoxDecoration(border: Border.all()),
-            ),
+      child: _getChild(),
+    );
+  }
+
+  Widget _getChild() {
+    if (state is WaitingForTransformRequest)
+      return FutureBuilder<Uint8List>(
+        builder: (context, imgBytes) {
+          if (imgBytes.hasData) {
+            if (imgBytes.data == null) {
+              return Text("NO DATA RECEIVED");
+            }
+            return Image.memory(imgBytes.data);
+          }
+          return CircularProgressIndicator();
+        },
+        future: state.img.readAsBytes(),
+        initialData: null,
+      );
+
+    if (state is TransformingImage) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Text(state.status.toString()),
+          Divider(),
+          Center(child: CircularProgressIndicator()),
+        ],
+      );
+    }
+    if (state is TransformingFinished)
+      return FutureBuilder<Uint8List>(
+        builder: (context, imgBytes) {
+          if (imgBytes.hasData) {
+            if (imgBytes.data == null) {
+              return Text("NO DATA RECEIVED");
+            }
+            return Image.memory(imgBytes.data);
+          }
+          return CircularProgressIndicator();
+        },
+        // state has the byte images
+        future: state.img,
+        initialData: null,
+      );
+
+    if (state is TransformingFailed)
+      return Container(
+        decoration: BoxDecoration(border: Border.all()),
+        child: Center(
+          child: Text("Transformation failed: ${state.reason}"),
+        ),
+      );
+
+    return Container(
+      decoration: BoxDecoration(border: Border.all()),
     );
   }
 }
@@ -76,7 +133,7 @@ class Actions extends StatelessWidget {
         ),
         RaisedButton(
           onPressed: (state is WaitingForTransformRequest)
-              ? () => _chooseImage(context)
+              ? () => _transformImage(context)
               : null,
           child: Text("Transform image"),
         ),
@@ -84,8 +141,14 @@ class Actions extends StatelessWidget {
     );
   }
 
+  void _transformImage(BuildContext context) async {
+    final ImageTransformerBloc bloc =
+        BlocProvider.of<ImageTransformerBloc>(context);
+    assert(bloc.state is WaitingForTransformRequest);
+    bloc.add(TransformRequested(bloc.state.img));
+  }
+
   void _chooseImage(BuildContext context) async {
-    // ignore: close_sinks
     final ImageTransformerBloc bloc =
         BlocProvider.of<ImageTransformerBloc>(context);
     bloc.add(ChoosingImage());

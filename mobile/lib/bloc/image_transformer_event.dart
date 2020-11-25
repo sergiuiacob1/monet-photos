@@ -19,13 +19,3 @@ class TransformRequested extends ImageTransformerEvent {
   final img;
   TransformRequested(this.img);
 }
-
-class TransformFinished extends ImageTransformerEvent {
-  final img;
-  TransformFinished(this.img);
-}
-
-class TransformFailed extends ImageTransformerEvent {
-  final String reason;
-  TransformFailed(this.reason);
-}

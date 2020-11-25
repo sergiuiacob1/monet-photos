@@ -1,22 +1,34 @@
 part of 'image_transformer_bloc.dart';
 
 @immutable
-abstract class ImageTransformerState {}
+abstract class ImageTransformerState {
+  final img;
+  ImageTransformerState(this.img);
+}
 
-class WaitingForImage extends ImageTransformerState {}
+class WaitingForImage extends ImageTransformerState {
+  WaitingForImage() : super(null);
+}
 
 class WaitingForTransformRequest extends ImageTransformerState {
-  final img;
-  WaitingForTransformRequest(this.img);
+  WaitingForTransformRequest(var img) : super(img);
 }
 
-enum ImageTransformerWorkingState {
+enum TransformingImageState {
   sendingToServer,
-  sentToServer,
   waitingResponse,
-  setResponse
 }
 
-class ImageTransformerWorking extends ImageTransformerState {}
+class TransformingImage extends ImageTransformerState {
+  final TransformingImageState status;
+  TransformingImage(var img, this.status) : super(img);
+}
 
-class ImageTransformerFinished extends ImageTransformerState {}
+class TransformingFinished extends ImageTransformerState {
+  TransformingFinished(img) : super(img);
+}
+
+class TransformingFailed extends ImageTransformerState {
+  final String reason;
+  TransformingFailed(this.reason) : super(null);
+}
