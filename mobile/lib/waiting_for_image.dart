@@ -129,9 +129,11 @@ class UploadImageWidget extends StatelessWidget {
       [bool ask = true]) async {
     Permission toAsk;
     if (source == ImageSource.camera)
-      toAsk = Permission.photos;
-    else
       toAsk = Permission.camera;
+    else
+      toAsk = Permission.photos;
+
+    print("Asking for $toAsk");
 
     Map<Permission, PermissionStatus> permissionsGranted =
         await [toAsk].request();

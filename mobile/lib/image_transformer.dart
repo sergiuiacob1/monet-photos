@@ -1,12 +1,15 @@
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:monet_photos/waiting_for_image.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import 'package:monet_photos/bloc/image_transformer_bloc.dart';
+import 'package:share/share.dart';
 
 import 'edit_image_screen.dart';
 
@@ -140,7 +143,6 @@ class ChooseImageButton extends StatelessWidget {
       );
 
   String _getTextByState() {
-    print("Got state: $state");
     if (state is TransformingFinished) return "Transform again";
     return "Choose image";
   }
@@ -204,7 +206,7 @@ class Actions extends StatelessWidget {
                     : null,
                 child: Text("Transform image"),
               ),
-        if (state is TransformingFinished) ShareButton(),
+        if (state is TransformingFinished) ShareButton(state.img),
       ],
     );
   }
@@ -219,11 +221,32 @@ class Actions extends StatelessWidget {
 }
 
 class ShareButton extends StatelessWidget {
+  final Future<Uint8List> img;
+  const ShareButton(this.img);
   @override
   Widget build(BuildContext context) {
     return RaisedButton(
-      onPressed: null,
+      onPressed: () => _shareImage(context),
       child: Text("Share"),
     );
+  }
+
+  void _shareImage(BuildContext context) async {
+    final Uint8List data = await this.img;
+    // TODO this is not supported in iOS
+    try {
+      final directory = (await getExternalStorageDirectory()).path;
+      // TODO I should know the extension
+      File imgFile = new File('$directory/share.jpeg');
+      imgFile.writeAsBytesSync(data);
+
+      Share.shareFiles(
+        [imgFile.path],
+        subject: "Monet photo",
+        text: "Check out my picture painted in Monet's style!",
+      );
+    } catch (e) {
+      debugPrint(e.toString());
+    }
   }
 }
