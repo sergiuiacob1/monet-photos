@@ -3,12 +3,26 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:monet_photos/waiting_for_image.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import 'package:monet_photos/bloc/image_transformer_bloc.dart';
 
-class ImageTransformer extends StatelessWidget {
+import 'edit_image_screen.dart';
+
+class ImageTransformer extends StatefulWidget {
+  @override
+  _ImageTransformerState createState() => _ImageTransformerState();
+}
+
+class _ImageTransformerState extends State<ImageTransformer> {
   final bloc = ImageTransformerBloc();
+
+  @override
+  void dispose() {
+    bloc.close();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -16,17 +30,10 @@ class ImageTransformer extends StatelessWidget {
       value: bloc,
       child: BlocBuilder<ImageTransformerBloc, ImageTransformerState>(
         builder: (context, state) => Container(
-          padding: EdgeInsets.all(8.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(
-                _getTextByState(state),
-                style:
-                    const TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-                textAlign: TextAlign.center,
-              ),
-              ImageViewer(state),
+              _getWidgetByState(state),
               Actions(state),
             ],
           ),
@@ -35,18 +42,9 @@ class ImageTransformer extends StatelessWidget {
     );
   }
 
-  String _getTextByState(ImageTransformerState state) {
-    if (state is WaitingForImage) {
-      return "Monet - choose your image";
-    } else if (state is WaitingForTransformRequest) {
-      return "Monet – transform the image";
-    } else if (state is TransformingImage) {
-      return "Monet – transforming image";
-    } else if (state is TransformingFinished) {
-      return "Monet – transform successful";
-    }
-
-    return "Unknown state";
+  Widget _getWidgetByState(ImageTransformerState state) {
+    if (state is WaitingForImage) return WaitingForImageWidget();
+    return ImageViewer(state);
   }
 }
 
@@ -116,39 +114,40 @@ class ImageViewer extends StatelessWidget {
   }
 }
 
-class Actions extends StatelessWidget {
+class EditImageButton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) => RaisedButton(
+        onPressed: () => _editImage(context),
+        child: Text("Edit image"),
+      );
+
+  void _editImage(BuildContext context) {
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => EditImageScreen()));
+  }
+}
+
+class ChooseImageButton extends StatelessWidget {
   final state;
   final picker = ImagePicker();
 
-  Actions(this.state);
+  ChooseImageButton(this.state);
 
   @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: [
-        RaisedButton(
-          onPressed: () => _chooseImage(context),
-          child: Text("Choose image"),
-        ),
-        RaisedButton(
-          onPressed: (state is WaitingForTransformRequest)
-              ? () => _transformImage(context)
-              : null,
-          child: Text("Transform image"),
-        ),
-      ],
-    );
+  Widget build(BuildContext context) => RaisedButton(
+        onPressed: () => _chooseImage(context),
+        child: Text(_getTextByState()),
+      );
+
+  String _getTextByState() {
+    print("Got state: $state");
+    if (state is TransformingFinished) return "Transform again";
+    return "Choose image";
   }
 
-  void _transformImage(BuildContext context) async {
-    final ImageTransformerBloc bloc =
-        BlocProvider.of<ImageTransformerBloc>(context);
-    assert(bloc.state is WaitingForTransformRequest);
-    bloc.add(TransformRequested(bloc.state.img));
-  }
-
+// TODO delete
   void _chooseImage(BuildContext context) async {
+    // ignore: close_sinks
     final ImageTransformerBloc bloc =
         BlocProvider.of<ImageTransformerBloc>(context);
     bloc.add(ChoosingImage());
@@ -183,5 +182,48 @@ class Actions extends StatelessWidget {
     }
 
     return false;
+  }
+}
+
+class Actions extends StatelessWidget {
+  final state;
+
+  Actions(this.state);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: [
+        ChooseImageButton(state),
+        state is TransformingFinished
+            ? EditImageButton()
+            : RaisedButton(
+                onPressed: (state is WaitingForTransformRequest)
+                    ? () => _transformImage(context)
+                    : null,
+                child: Text("Transform image"),
+              ),
+        if (state is TransformingFinished) ShareButton(),
+      ],
+    );
+  }
+
+  void _transformImage(BuildContext context) async {
+    // ignore: close_sinks
+    final ImageTransformerBloc bloc =
+        BlocProvider.of<ImageTransformerBloc>(context);
+    assert(bloc.state is WaitingForTransformRequest);
+    bloc.add(TransformRequested(bloc.state.img));
+  }
+}
+
+class ShareButton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return RaisedButton(
+      onPressed: null,
+      child: Text("Share"),
+    );
   }
 }
