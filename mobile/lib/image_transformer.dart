@@ -3,15 +3,12 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:monet_photos/waiting_for_image.dart';
+import 'package:share/share.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 import 'package:monet_photos/bloc/image_transformer_bloc.dart';
-import 'package:share/share.dart';
-
-import 'edit_image_screen.dart';
+import 'package:monet_photos/waiting_for_image.dart';
+import 'package:monet_photos/edit_image_screen.dart';
 
 class ImageTransformer extends StatefulWidget {
   @override
@@ -130,61 +127,17 @@ class EditImageButton extends StatelessWidget {
   }
 }
 
-class ChooseImageButton extends StatelessWidget {
-  final state;
-  final picker = ImagePicker();
-
-  ChooseImageButton(this.state);
-
+class TransformAgainButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) => RaisedButton(
-        onPressed: () => _chooseImage(context),
-        child: Text(_getTextByState()),
+        onPressed: () {
+          // ignore: close_sinks
+          final ImageTransformerBloc bloc =
+              BlocProvider.of<ImageTransformerBloc>(context);
+          bloc.add(ResetProcess());
+        },
+        child: Text("Transform another"),
       );
-
-  String _getTextByState() {
-    if (state is TransformingFinished) return "Transform again";
-    return "Choose image";
-  }
-
-// TODO delete
-  void _chooseImage(BuildContext context) async {
-    // ignore: close_sinks
-    final ImageTransformerBloc bloc =
-        BlocProvider.of<ImageTransformerBloc>(context);
-    bloc.add(ChoosingImage());
-
-    bool permissionGranted = await _isPermissionGranted();
-    if (permissionGranted) {
-      try {
-        final img = await picker.getImage(source: ImageSource.gallery);
-        bloc.add(ImageChosen(img));
-      } catch (e) {
-        print("Error: $e");
-      }
-    } else {
-      bloc.add(ImageChoosingFailed("Storage permission not granted"));
-    }
-  }
-
-  Future<bool> _isPermissionGranted([bool ask = true]) async {
-    Map<Permission, PermissionStatus> permissionsGranted = await [
-      Permission.photos,
-    ].request();
-
-    if (permissionsGranted[Permission.photos].isGranted) {
-      return true;
-    }
-
-    if (ask) {
-      Map<Permission, PermissionStatus> statuses = await [
-        Permission.photos,
-      ].request();
-      return statuses[Permission.photos].isGranted;
-    }
-
-    return false;
-  }
 }
 
 class Actions extends StatelessWidget {
@@ -197,15 +150,15 @@ class Actions extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
-        ChooseImageButton(state),
-        state is TransformingFinished
-            ? EditImageButton()
-            : RaisedButton(
-                onPressed: (state is WaitingForTransformRequest)
-                    ? () => _transformImage(context)
-                    : null,
-                child: Text("Transform image"),
-              ),
+        if (state is TransformingFinished) TransformAgainButton(),
+        if (state is TransformingFinished) EditImageButton(),
+        if (state is WaitingForTransformRequest)
+          RaisedButton(
+            onPressed: (state is WaitingForTransformRequest)
+                ? () => _transformImage(context)
+                : null,
+            child: Text("Transform image"),
+          ),
         if (state is TransformingFinished) ShareButton(state.img),
       ],
     );

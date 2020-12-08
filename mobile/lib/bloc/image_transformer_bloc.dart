@@ -15,6 +15,9 @@ class ImageTransformerBloc
   Stream<ImageTransformerState> mapEventToState(
     ImageTransformerEvent event,
   ) async* {
+    if (event is ResetProcess) {
+      yield WaitingForImage();
+    }
     if (event is ChoosingImage) {
       yield WaitingForImage();
     } else if (event is ImageChosen) {

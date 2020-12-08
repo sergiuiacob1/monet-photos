@@ -1,21 +1,30 @@
 import 'package:bloc/bloc.dart';
+import 'package:flutter/foundation.dart';
+import 'package:monet_photos/bloc/global_bloc.dart';
+import 'package:monet_photos/bloc/image_transformer_bloc.dart';
 
 class SimpleBlocObserver extends BlocObserver {
+  final GlobalBloc globalBloc;
+
+  SimpleBlocObserver(this.globalBloc);
+
   @override
   void onEvent(Bloc bloc, Object event) {
-    // print("Got event: $event");
+    // debugPrint("Got event: $event");
     super.onEvent(bloc, event);
   }
 
   @override
   void onTransition(Bloc bloc, Transition transition) {
-    // print("Transition between states: $transition");
+    // debugPrint("Transition between states: $transition");
+    if (transition.nextState is TransformingFinished)
+      globalBloc.increaseNoSuccessfulTransforms();
     super.onTransition(bloc, transition);
   }
 
   @override
   void onError(dynamic bloc, Object error, StackTrace stackTrace) {
-    print("Bloc error: $error");
+    debugPrint("Bloc error: $error");
     super.onError(bloc, error, stackTrace);
   }
 }

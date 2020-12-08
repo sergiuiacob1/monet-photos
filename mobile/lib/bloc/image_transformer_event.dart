@@ -3,6 +3,8 @@ part of 'image_transformer_bloc.dart';
 @immutable
 abstract class ImageTransformerEvent {}
 
+class ResetProcess extends ImageTransformerEvent {}
+
 class ChoosingImage extends ImageTransformerEvent {}
 
 class ImageChosen extends ImageTransformerEvent {

@@ -10,8 +10,6 @@ class WaitingForImageWidget extends StatelessWidget {
   const WaitingForImageWidget();
   @override
   Widget build(BuildContext context) {
-    print("WaitingForImage build");
-
     return Expanded(
       child: Container(
         decoration: BoxDecoration(
@@ -117,7 +115,7 @@ class UploadImageWidget extends StatelessWidget {
         final img = await picker.getImage(source: source);
         bloc.add(ImageChosen(img));
       } catch (e) {
-        print("Error: $e");
+        debugPrint("Error: $e");
       }
     } else {
       bloc.add(ImageChoosingFailed(
@@ -132,8 +130,6 @@ class UploadImageWidget extends StatelessWidget {
       toAsk = Permission.camera;
     else
       toAsk = Permission.photos;
-
-    print("Asking for $toAsk");
 
     Map<Permission, PermissionStatus> permissionsGranted =
         await [toAsk].request();

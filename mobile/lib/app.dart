@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import 'package:monet_photos/history_page.dart';
 import 'package:monet_photos/image_transformer.dart';
 
 class MyApp extends StatelessWidget {
@@ -21,10 +23,7 @@ class HomePage extends StatefulWidget {
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   static List<Widget> _widgetOptions = <Widget>[
     ImageTransformer(),
-    Text(
-      'History',
-      style: optionStyle,
-    ),
+    HistoryPage(),
     Text(
       'Settings',
       style: optionStyle,
