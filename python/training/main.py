@@ -27,9 +27,6 @@ if __name__ == '__main__':
     #fake_set, real_set = load_deserialized_dataset()
     fake_set, real_set = load_serialized_dataset()
 
-    fake_set = np.asarray(fake_set)
-    real_set = np.asarray(real_set)
-
     # model_serializer = ModelSerializer()
     # model = model_serializer.deserialize("monet")
     # generated_image = ((model.predict(real_set[:1]) + 1) * 127.5).astype('int')
@@ -46,5 +43,3 @@ if __name__ == '__main__':
     # plt.show()
 
     model_trainer.create_model_and_train(real_set, fake_set, (256, 256, 3), "monet")
-
-
