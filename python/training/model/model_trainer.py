@@ -63,7 +63,7 @@ def train(d_model_A, d_model_B, g_model_AtoB, g_model_BtoA, c_model_AtoB, c_mode
     # calculate the number of training iterations
     n_steps = bat_per_epo * n_epochs
     # manually enumerate epochs
-    for i in range(1000):
+    for i in range(10):
         # select a batch of real samples
         X_realA, y_realA = generate_real_samples(trainA, n_batch, n_patch)
         X_realB, y_realB = generate_real_samples(trainB, n_batch, n_patch)
