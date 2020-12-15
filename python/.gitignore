@@ -4,3 +4,4 @@ venv
 __pycache__
 training/dataset/*/serialized
 .pytest_cache
+training/generated_models/*
