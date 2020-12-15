@@ -14,18 +14,17 @@
 
 # [START gae_python38_app]
 from flask import Flask, render_template, request, redirect, url_for
+from backend.gcloud_app.requests.request_handler import RequestHandler
 
 
 # If `entrypoint` is not defined in app.yaml, App Engine will look for an app
 # called `app` in `main.py`.
 app = Flask(__name__)
-
+request_handler = RequestHandler()
 
 @app.route('/', methods=['POST'])
 def upload_file():
-    uploaded_file = request.files['file']
-    print(uploaded_file.read())
-    return uploaded_file.read()
+    return request_handler.handle(request)
 
 
 if __name__ == '__main__':

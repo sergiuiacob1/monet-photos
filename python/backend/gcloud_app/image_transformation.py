@@ -1,6 +1,6 @@
 import cv2
 import numpy as np
-from exceptions import InvalidRequest
+from backend.gcloud_app.exceptions.invalid_request import InvalidRequest
 
 def resize_image(img):
     dim = (256, 256)
@@ -35,4 +35,4 @@ def segment_image(image, size):
 
 
 def reconstruct_image(image_segments, shape, size):
-    
+    pass

@@ -1,5 +1,5 @@
-from backend.style_transfer.monet_style_transfer import MonetStyleTransfer
-from backend.exceptions.exceptions import InvalidRequest
+from backend.gcloud_app.style_transfer.monet_style_transfer import MonetStyleTransfer
+from backend.gcloud_app.exceptions.invalid_request import InvalidRequest
 
 
 class StyleTransferFactory:

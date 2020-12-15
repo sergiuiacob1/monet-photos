@@ -1,5 +1,5 @@
-from backend.style_transfer.style_transfer_interface import StyleTransferInterface
-import backend.image_transformation as img_transform
+from backend.gcloud_app.style_transfer.style_transfer_interface import StyleTransferInterface
+import backend.gcloud_app.image_transformation as img_transform
 
 
 class MonetStyleTransfer(StyleTransferInterface):
