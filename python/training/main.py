@@ -4,6 +4,8 @@ import training.model.model_trainer as model_trainer
 import numpy as np
 from training.model.model_serializer import ModelSerializer
 import matplotlib.pyplot as plt
+import random
+from training.image_adapter import ImageAdapter
 
 
 def load_deserialized_dataset():
@@ -24,6 +26,8 @@ def load_serialized_dataset():
 
 
 if __name__ == '__main__':
+    set_key = "1608650427_99"
+    image_adapter = ImageAdapter()
     #fake_set, real_set = load_deserialized_dataset()
     fake_set, real_set = load_serialized_dataset()
 
@@ -31,10 +35,19 @@ if __name__ == '__main__':
     real_set = np.asarray(real_set)
 
     # model_serializer = ModelSerializer()
-    # model = model_serializer.deserialize("monet")
-    # generated_image = ((model.predict(real_set[:1]) + 1) * 127.5).astype('int')
+    # models = model_serializer.deserialize("monet", set_key)
+    # model = models['g_model_AtoB']
     #
-    # images = [real_set[0], generated_image[0]]
+    # np.random.shuffle(real_set)
+    # selected_image = real_set[0]
+    # serialized_image = image_adapter.to_network_input(selected_image)
+    #
+    # network_output = model.predict(np.asarray([serialized_image]))
+    # generated_image = image_adapter.to_image(network_output[0])
+    #
+    # print(generated_image)
+    #
+    # images = [selected_image, generated_image]
     #
     # fig = plt.figure(figsize=(8, 8))
     # columns = 2
@@ -45,4 +58,7 @@ if __name__ == '__main__':
     #     plt.imshow(img)
     # plt.show()
 
-    model_trainer.create_model_and_train(real_set, fake_set, (256, 256, 3), "monet")
+    normalized_fake_dataset = image_adapter.to_network_input(fake_set)
+    normalized_real_dataset = image_adapter.to_network_input(real_set)
+
+    model_trainer.create_model_and_train(normalized_real_dataset, normalized_fake_dataset, (256, 256, 3), "monet")

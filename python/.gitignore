@@ -5,3 +5,4 @@ __pycache__
 training/dataset/*/serialized
 .pytest_cache
 training/generated_models/*
+backend/gcloud_app/generated_models/*

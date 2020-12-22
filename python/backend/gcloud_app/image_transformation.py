@@ -1,6 +1,6 @@
 import cv2
 import numpy as np
-from backend.gcloud_app.exceptions.invalid_request import InvalidRequest
+from exceptions.invalid_request import InvalidRequest
 
 def resize_image(img):
     dim = (256, 256)
