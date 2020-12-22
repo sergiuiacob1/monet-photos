@@ -2,15 +2,17 @@ import training.model.model_creator as model_creator
 import numpy as np
 import random
 from training.model.model_serializer import ModelSerializer
+import time
+import math
 
 
 def create_model_and_train(real_dataset, fake_dataset, image_shape, dataset_name):
     d_model_A, d_model_B, g_model_AtoB, g_model_BtoA, c_model_AtoB, c_model_BtoA = model_creator.create_model(
         image_shape)
-    g_model_AtoB = train(d_model_A, d_model_B, g_model_AtoB, g_model_BtoA, c_model_AtoB, c_model_BtoA, (real_dataset, fake_dataset))
+    models, key = train(d_model_A, d_model_B, g_model_AtoB, g_model_BtoA, c_model_AtoB, c_model_BtoA, (real_dataset, fake_dataset), dataset_name)
 
     serializer = ModelSerializer()
-    serializer.serialize(g_model_AtoB, dataset_name)
+    serializer.serialize(models, dataset_name, key)
 
 
 def generate_real_samples(dataset, n_samples, patch_shape):
@@ -49,7 +51,21 @@ def update_image_pool(pool, images, max_size=50):
     return np.asarray(selected)
 
 
-def train(d_model_A, d_model_B, g_model_AtoB, g_model_BtoA, c_model_AtoB, c_model_BtoA, dataset):
+def pack_models(d_model_A, d_model_B, g_model_AtoB, g_model_BtoA, c_model_AtoB, c_model_BtoA, step_count):
+    current_timestamp = math.floor(time.time())
+    key = f'{current_timestamp}_{step_count}'
+    models = dict()
+    models['d_model_A'] = d_model_A
+    models['d_model_B'] = d_model_B
+    models['g_model_AtoB'] = g_model_AtoB
+    models['g_model_BtoA'] = g_model_BtoA
+    models['c_model_AtoB'] = c_model_AtoB
+    models['c_model_BtoA'] = c_model_BtoA
+    return models, key
+
+
+def train(d_model_A, d_model_B, g_model_AtoB, g_model_BtoA, c_model_AtoB, c_model_BtoA, dataset, dataset_name):
+    model_serializer = ModelSerializer()
     # define properties of the training run
     n_epochs, n_batch, = 100, 1
     # determine the output square shape of the discriminator
@@ -62,8 +78,9 @@ def train(d_model_A, d_model_B, g_model_AtoB, g_model_BtoA, c_model_AtoB, c_mode
     bat_per_epo = int(len(trainA) / n_batch)
     # calculate the number of training iterations
     n_steps = bat_per_epo * n_epochs
+    steps = 50
     # manually enumerate epochs
-    for i in range(10):
+    for i in range(steps):
         # select a batch of real samples
         X_realA, y_realA = generate_real_samples(trainA, n_batch, n_patch)
         X_realB, y_realB = generate_real_samples(trainB, n_batch, n_patch)
@@ -86,4 +103,11 @@ def train(d_model_A, d_model_B, g_model_AtoB, g_model_BtoA, c_model_AtoB, c_mode
         # summarize performance
         print('>%d, dA[%.3f,%.3f] dB[%.3f,%.3f] g[%.3f,%.3f]' %
               (i + 1, dA_loss1, dA_loss2, dB_loss1, dB_loss2, g_loss1, g_loss2))
-    return g_model_AtoB
+
+        if (i+1) % 5 == 0:
+            models, key = pack_models(d_model_A, d_model_B, g_model_AtoB, g_model_BtoA, c_model_AtoB, c_model_BtoA, i + 1)
+            model_serializer.serialize(models, dataset_name, key, trainA[:3])
+
+        model_serializer.serialize_control_images(g_model_AtoB, g_model_BtoA, trainA[:3], dataset_name, i+1)
+
+    return pack_models(d_model_A, d_model_B, g_model_AtoB, g_model_BtoA, c_model_AtoB, c_model_BtoA, steps)

@@ -4,7 +4,7 @@ from keras.models import Model
 from keras.models import Input
 from keras.layers import Conv2D
 from keras.layers import LeakyReLU
-from keras_contrib.layers.normalization.instancenormalization import InstanceNormalization
+from keras.layers import BatchNormalization
 
 
 def define_discriminator(image_shape):
@@ -17,19 +17,19 @@ def define_discriminator(image_shape):
 	d = LeakyReLU(alpha=0.2)(d)
 	# C128
 	d = Conv2D(128, (4, 4), strides=(2, 2), padding='same', kernel_initializer=init)(d)
-	d = InstanceNormalization(axis=-1)(d)
+	d = BatchNormalization(axis=-1)(d)
 	d = LeakyReLU(alpha=0.2)(d)
 	# C256
 	d = Conv2D(256, (4, 4), strides=(2, 2), padding='same', kernel_initializer=init)(d)
-	d = InstanceNormalization(axis=-1)(d)
+	d = BatchNormalization(axis=-1)(d)
 	d = LeakyReLU(alpha=0.2)(d)
 	# C512
 	d = Conv2D(512, (4, 4), strides=(2, 2), padding='same', kernel_initializer=init)(d)
-	d = InstanceNormalization(axis=-1)(d)
+	d = BatchNormalization(axis=-1)(d)
 	d = LeakyReLU(alpha=0.2)(d)
 	# second last output layer
 	d = Conv2D(512, (4, 4), padding='same', kernel_initializer=init)(d)
-	d = InstanceNormalization(axis=-1)(d)
+	d = BatchNormalization(axis=-1)(d)
 	d = LeakyReLU(alpha=0.2)(d)
 	# patch output
 	patch_out = Conv2D(1, (4, 4), padding='same', kernel_initializer=init)(d)

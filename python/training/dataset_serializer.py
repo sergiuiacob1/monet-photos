@@ -1,5 +1,6 @@
 import pickle
 import os
+from pathlib import Path
 
 
 class DatasetSerializer:
@@ -7,11 +8,13 @@ class DatasetSerializer:
     # a serialized data set occupies 10 times more disk space that a deserialized one.
     # it is much slower to load from disk a deserialized dataset.
 
-    base_path = os.getcwd()
+    base_path = os.path.join(os.getcwd(), "training")
     serialised_folder_name = "serialized"
 
     def serialize(self, fake_set, real_set, set_name):
         path = os.path.join(self.base_path, "dataset", set_name, self.serialised_folder_name)
+        Path(path).mkdir(parents=True, exist_ok=True)
+
         fake_path = os.path.join(path, "fake.bin")
         real_path = os.path.join(path, "real.bin")
 
