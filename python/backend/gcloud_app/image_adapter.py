@@ -1,4 +1,4 @@
-from backend.gcloud_app.image_transformation import *
+from image_transformation import *
 from cv2 import cv2
 
 
@@ -8,6 +8,7 @@ class ImageAdapter:
         image = resize_image(image)
         return image
 
-    def array_to_image(self, array):
+    def array_to_image(self, array, extension):
         # takes the numpy array returned by the generator and constructs an image based on image_format (PNG, JPEG etc.)
-        return cv2.cvtColor(array, cv2.COLOR_GRAY2BGR)
+        ret, buf = cv2.imencode(extension, array)
+        return buf.tobytes()

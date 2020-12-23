@@ -14,7 +14,7 @@
 
 # [START gae_python38_app]
 from flask import Flask, render_template, request, redirect, url_for
-from backend.gcloud_app.requests.request_handler import RequestHandler
+from requests.request_handler import RequestHandler
 
 
 # If `entrypoint` is not defined in app.yaml, App Engine will look for an app

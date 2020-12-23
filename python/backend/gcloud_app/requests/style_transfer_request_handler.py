@@ -1,8 +1,8 @@
-from backend.gcloud_app.requests.request_handler import RequestHandler
-from backend.gcloud_app.style_transfer.style_transfer_factory import StyleTransferFactory
-from backend.gcloud_app.requests.request_response import RequestResponse
+from requests.request_handler import RequestHandler
+from style_transfer.style_transfer_factory import StyleTransferFactory
+from requests.request_response import RequestResponse
 
-from backend.gcloud_app.exceptions.invalid_request import InvalidRequest
+from exceptions.invalid_request import InvalidRequest
 
 
 class StyleTransferRequestHandler(RequestHandler):
