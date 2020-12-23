@@ -33,6 +33,11 @@ class ModelSerializer:
 
         return models
 
+    def deserialize_specific_network(self, dataset_name, key, network_name):
+        path = f"./training/generated_models/{dataset_name}/{key}/{network_name}.h5"
+        model = keras.models.load_model(path)
+        return model
+
     def serialize_control_images(self, generator_to_fake, generator_to_real, normalized_images, dataset_name, key):
         image_adapter = ImageAdapter()
         folder_path = self.construct_folder_path(dataset_name, key)

@@ -6,6 +6,20 @@ import time
 import math
 
 
+def load_model_and_train(real_dataset, fake_dataset, dataset_name, models):
+    d_model_A = models['d_model_A']
+    d_model_B = models['d_model_B']
+    g_model_AtoB = models['g_model_AtoB']
+    g_model_BtoA = models['g_model_BtoA']
+    c_model_AtoB = models['c_model_AtoB']
+    c_model_BtoA = models['c_model_BtoA']
+
+    models, key = train(d_model_A, d_model_B, g_model_AtoB, g_model_BtoA, c_model_AtoB, c_model_BtoA, (real_dataset, fake_dataset), dataset_name)
+
+    serializer = ModelSerializer()
+    serializer.serialize(models, dataset_name, key)
+
+
 def create_model_and_train(real_dataset, fake_dataset, image_shape, dataset_name):
     d_model_A, d_model_B, g_model_AtoB, g_model_BtoA, c_model_AtoB, c_model_BtoA = model_creator.create_model(
         image_shape)
