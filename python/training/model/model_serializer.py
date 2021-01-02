@@ -8,8 +8,6 @@ from keras.optimizers import Adam
 
 class ModelSerializer:
     model_names = ['d_model_A', "d_model_B", "g_model_AtoB", "g_model_BtoA", "c_model_AtoB", "c_model_BtoA"]
-    composite_model_names = ["c_model_AtoB", "c_model_BtoA"]
-
     base_path = './training/generated_models/'
 
     def serialize(self, models, dataset_name, key, normalized_images=np.array([])):
