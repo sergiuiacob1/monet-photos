@@ -8,6 +8,7 @@ import math
 MODEL_SERIALIZE_FREQUENCY = 5
 CONTROL_IMAGE_FREQUENCY = 1
 
+
 def load_model_and_train(real_dataset, fake_dataset, dataset_name, models):
     d_model_A = models['d_model_A']
     d_model_B = models['d_model_B']

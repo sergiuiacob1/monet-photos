@@ -42,8 +42,18 @@ def create_model_and_train():
     model_trainer.create_model_and_train(normalized_real_dataset, normalized_fake_dataset, (256, 256, 3), "monet")
 
 
-def load_model_and_show():
-    set_key = "model_3500"
+def load_model_and_train(set_key):
+    image_adapter = ImageAdapter()
+    fake_set, real_set = load_serialized_dataset()
+
+    normalized_fake_dataset = image_adapter.to_network_input(fake_set)
+    normalized_real_dataset = image_adapter.to_network_input(real_set)
+
+    model_serializer = ModelSerializer()
+    models = model_serializer.deserialize("monet", set_key)
+    model_trainer.load_model_and_train(normalized_real_dataset, normalized_fake_dataset, "monet", models)
+
+def load_model_and_show(set_key):
     image_adapter = ImageAdapter()
 
     # fake_set, real_set = load_deserialized_dataset()
@@ -73,4 +83,5 @@ def load_model_and_show():
 
 if __name__ == '__main__':
     #create_model_and_train()
-    load_model_and_show()
+    #load_model_and_show("model_3500")
+    load_model_and_train('1608663138_50')

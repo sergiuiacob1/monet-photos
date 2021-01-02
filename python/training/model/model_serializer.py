@@ -3,10 +3,12 @@ from pathlib import Path
 import numpy as np
 from training.image_adapter import ImageAdapter
 import cv2
+from keras.optimizers import Adam
 
 
 class ModelSerializer:
     model_names = ['d_model_A', "d_model_B", "g_model_AtoB", "g_model_BtoA", "c_model_AtoB", "c_model_BtoA"]
+    composite_model_names = ["c_model_AtoB", "c_model_BtoA"]
 
     base_path = './training/generated_models/'
 
@@ -30,6 +32,10 @@ class ModelSerializer:
             path = f"./training/generated_models/{dataset_name}/{key}/{name}.h5"
             model = keras.models.load_model(path)
             models[name] = model
+
+        opt = Adam(lr=0.0002, beta_1=0.5)
+        models['c_model_AtoB'].compile(loss=['mse', 'mae', 'mae', 'mae'], loss_weights=[1, 5, 10, 10], optimizer=opt)
+        models['c_model_BtoA'].compile(loss=['mse', 'mae', 'mae', 'mae'], loss_weights=[1, 5, 10, 10], optimizer=opt)
 
         return models
 
