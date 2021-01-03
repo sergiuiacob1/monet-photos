@@ -10,7 +10,7 @@ class ModelSerializer:
     model_names = ['d_model_A', "d_model_B", "g_model_AtoB", "g_model_BtoA", "c_model_AtoB", "c_model_BtoA"]
     base_path = './training/generated_models/'
 
-    def serialize(self, models, dataset_name, key, normalized_images=np.array([])):
+    def serialize(self, models, dataset_name, key):
         # serializes the model and it's associated metadata into a file named file_name
         # these generated_models are going to be stored into the generated_models folder
 
@@ -27,7 +27,7 @@ class ModelSerializer:
         models = dict()
 
         for name in self.model_names:
-            path = f"./training/generated_models/{dataset_name}/{key}/{name}.h5"
+            path = f"{self.base_path}/{dataset_name}/{key}/{name}.h5"
             model = keras.models.load_model(path)
             models[name] = model
 
@@ -38,7 +38,7 @@ class ModelSerializer:
         return models
 
     def deserialize_specific_network(self, dataset_name, key, network_name):
-        path = f"./training/generated_models/{dataset_name}/{key}/{network_name}.h5"
+        path = f"{self.base_path}/{dataset_name}/{key}/{network_name}.h5"
         model = keras.models.load_model(path)
         return model
 

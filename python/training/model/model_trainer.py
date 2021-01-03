@@ -6,8 +6,6 @@ import time
 import math
 
 MODEL_SERIALIZE_FREQUENCY = 5
-CONTROL_IMAGE_FREQUENCY = 1
-
 
 def load_model_and_train(real_dataset, fake_dataset, dataset_name, models):
     d_model_A = models['d_model_A']
@@ -95,9 +93,8 @@ def train(d_model_A, d_model_B, g_model_AtoB, g_model_BtoA, c_model_AtoB, c_mode
     bat_per_epo = int(len(trainA) / n_batch)
     # calculate the number of training iterations
     n_steps = bat_per_epo * n_epochs
-    steps = 50
     # manually enumerate epochs
-    for i in range(steps):
+    for i in range(n_steps):
         # select a batch of real samples
         X_realA, y_realA = generate_real_samples(trainA, n_batch, n_patch)
         X_realB, y_realB = generate_real_samples(trainB, n_batch, n_patch)
@@ -123,9 +120,7 @@ def train(d_model_A, d_model_B, g_model_AtoB, g_model_BtoA, c_model_AtoB, c_mode
 
         if (i+1) % MODEL_SERIALIZE_FREQUENCY == 0:
             models, key = pack_models(d_model_A, d_model_B, g_model_AtoB, g_model_BtoA, c_model_AtoB, c_model_BtoA, i + 1)
-            model_serializer.serialize(models, dataset_name, key, trainA[:3])
+            model_serializer.serialize(models, dataset_name, key)
+            model_serializer.serialize_control_images(g_model_AtoB, g_model_BtoA, trainA[:3], dataset_name, key)
 
-        if (i+1) % CONTROL_IMAGE_FREQUENCY == 0:
-            model_serializer.serialize_control_images(g_model_AtoB, g_model_BtoA, trainA[:3], dataset_name, i+1)
-
-    return pack_models(d_model_A, d_model_B, g_model_AtoB, g_model_BtoA, c_model_AtoB, c_model_BtoA, steps)
+    return pack_models(d_model_A, d_model_B, g_model_AtoB, g_model_BtoA, c_model_AtoB, c_model_BtoA, n_steps)
