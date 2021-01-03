@@ -3,12 +3,13 @@ from pathlib import Path
 import numpy as np
 from training.image_adapter import ImageAdapter
 import cv2
-from keras.optimizers import Adam
+from training.model.model_creator import define_composite_model
 
 
 class ModelSerializer:
-    model_names = ['d_model_A', "d_model_B", "g_model_AtoB", "g_model_BtoA", "c_model_AtoB", "c_model_BtoA"]
+    model_names = ['d_model_A', "d_model_B", "g_model_AtoB", "g_model_BtoA"]
     base_path = './training/generated_models/'
+    image_shape = (256, 256, 3)
 
     def serialize(self, models, dataset_name, key):
         # serializes the model and it's associated metadata into a file named file_name
@@ -31,9 +32,17 @@ class ModelSerializer:
             model = keras.models.load_model(path)
             models[name] = model
 
-        opt = Adam(lr=0.0002, beta_1=0.5)
-        models['c_model_AtoB'].compile(loss=['mse', 'mae', 'mae', 'mae'], loss_weights=[1, 5, 10, 10], optimizer=opt)
-        models['c_model_BtoA'].compile(loss=['mse', 'mae', 'mae', 'mae'], loss_weights=[1, 5, 10, 10], optimizer=opt)
+        models['c_model_AtoB'] = define_composite_model(
+            models['g_model_AtoB'],
+            models['d_model_B'],
+            models['g_model_BtoA'],
+            self.image_shape)
+
+        models['c_model_BtoA'] = define_composite_model(
+            models['g_model_BtoA'],
+            models['d_model_A'],
+            models['g_model_AtoB'],
+            self.image_shape)
 
         return models
 

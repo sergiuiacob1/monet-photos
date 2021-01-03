@@ -7,6 +7,7 @@ import math
 
 MODEL_SERIALIZE_FREQUENCY = 5
 
+
 def load_model_and_train(real_dataset, fake_dataset, dataset_name, models):
     d_model_A = models['d_model_A']
     d_model_B = models['d_model_B']
@@ -66,7 +67,7 @@ def update_image_pool(pool, images, max_size=50):
     return np.asarray(selected)
 
 
-def pack_models(d_model_A, d_model_B, g_model_AtoB, g_model_BtoA, c_model_AtoB, c_model_BtoA, step_count):
+def pack_models(d_model_A, d_model_B, g_model_AtoB, g_model_BtoA, step_count):
     current_timestamp = math.floor(time.time())
     key = f'{current_timestamp}_{step_count}'
     models = dict()
@@ -74,8 +75,6 @@ def pack_models(d_model_A, d_model_B, g_model_AtoB, g_model_BtoA, c_model_AtoB, 
     models['d_model_B'] = d_model_B
     models['g_model_AtoB'] = g_model_AtoB
     models['g_model_BtoA'] = g_model_BtoA
-    models['c_model_AtoB'] = c_model_AtoB
-    models['c_model_BtoA'] = c_model_BtoA
     return models, key
 
 
@@ -119,8 +118,8 @@ def train(d_model_A, d_model_B, g_model_AtoB, g_model_BtoA, c_model_AtoB, c_mode
               (i + 1, dA_loss1, dA_loss2, dB_loss1, dB_loss2, g_loss1, g_loss2))
 
         if (i+1) % MODEL_SERIALIZE_FREQUENCY == 0:
-            models, key = pack_models(d_model_A, d_model_B, g_model_AtoB, g_model_BtoA, c_model_AtoB, c_model_BtoA, i + 1)
+            models, key = pack_models(d_model_A, d_model_B, g_model_AtoB, g_model_BtoA, i + 1)
             model_serializer.serialize(models, dataset_name, key)
             model_serializer.serialize_control_images(g_model_AtoB, g_model_BtoA, trainA[:3], dataset_name, key)
 
-    return pack_models(d_model_A, d_model_B, g_model_AtoB, g_model_BtoA, c_model_AtoB, c_model_BtoA, n_steps)
+    return pack_models(d_model_A, d_model_B, g_model_AtoB, g_model_BtoA, n_steps)
