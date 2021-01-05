@@ -12,3 +12,10 @@ class ImageAdapter:
         # takes the numpy array returned by the generator and constructs an image based on image_format (PNG, JPEG etc.)
         ret, buf = cv2.imencode(extension, array)
         return buf.tobytes()
+
+    def to_network_input(self,image):
+        return (image - 127.5) / 127.5
+
+    def to_image(self,normalized_image):
+        image = normalized_image * 127.5 + 127.5
+        return image.astype(int)

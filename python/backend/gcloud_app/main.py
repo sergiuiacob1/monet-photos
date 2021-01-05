@@ -15,16 +15,24 @@
 # [START gae_python38_app]
 from flask import Flask, render_template, request, redirect, url_for
 from requests.request_handler import RequestHandler
-
+import keras
+import numpy as np
+import logging
 
 # If `entrypoint` is not defined in app.yaml, App Engine will look for an app
 # called `app` in `main.py`.
 app = Flask(__name__)
 request_handler = RequestHandler()
+logging.error("Loading model...")
+path = f"./generated_models/g_model_AtoB.h5"
+model = keras.models.load_model(path)
+logging.error("Model loaded...")
+        
 
 @app.route('/', methods=['POST'])
 def upload_file():
-    return request_handler.handle(request)
+    logging.error("Received request...")
+    return request_handler.handle(request, model)
 
 
 if __name__ == '__main__':
@@ -32,4 +40,5 @@ if __name__ == '__main__':
     # Engine, a webserver process such as Gunicorn will serve the app. This
     # can be configured by adding an `entrypoint` to app.yaml.
     app.run(host='127.0.0.1', port=8080, debug=True)
+    logging.error("App started...")
 # [END gae_python38_app]
