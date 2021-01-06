@@ -26,7 +26,7 @@ def segment_image(image, size):
             y = j*size
             x1 = x+size
             y1 = y+size
-            rectangle = image[y:y1,x:x1]
+            rectangle = image[x:x1, y:y1]
 
             response.append(rectangle)
 

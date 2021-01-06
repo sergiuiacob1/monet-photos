@@ -46,7 +46,6 @@ def test_reconstruct_image():
     img = load_image("testing/tests/test_img_2.jpg")
     size = 256
     segment_block_shape, segments = segment_image(img, size)
-    print(segment_block_shape)
     reconstructed_img = reconstruct_image(segments, segment_block_shape)
 
-    assert img == reconstructed_img
+    assert np.array_equal(img, reconstructed_img)
