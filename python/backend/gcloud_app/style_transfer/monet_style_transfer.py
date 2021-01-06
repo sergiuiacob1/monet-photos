@@ -17,7 +17,7 @@ class MonetStyleTransfer(StyleTransferInterface):
             generated_image = self.mock_apply_style(segment)
             generated_image_segments.append(generated_image)
 
-        result = img_transform.reconstruct_image(generated_image_segments, shape, self.size)
+        result = img_transform.reconstruct_image(generated_image_segments, shape)
 
         return result
 
