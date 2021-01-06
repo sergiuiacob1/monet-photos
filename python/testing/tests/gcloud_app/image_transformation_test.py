@@ -1,4 +1,5 @@
 import numpy as np
+import logging
 from testing.tests.test_utils import *
 from backend.gcloud_app.image_adapter import ImageAdapter
 from backend.gcloud_app.image_transformation import resize_image
@@ -6,7 +7,7 @@ from backend.gcloud_app.style_transfer.monet_style_transfer import MonetStyleTra
 
 
 def test_image_resize():
-    img = load_image("./tests/test_img.jpg")
+    img = load_image("testing/tests/test_img.jpg")
     width, height, _ = img.shape
     assert width != 256
     assert height != 256
@@ -19,7 +20,7 @@ def test_image_resize():
 
 
 def test_image_to_array():
-    img = load_image("./tests/test_img.jpg")
+    img = load_image("testing/tests/test_img.jpg")
     image_adapter = ImageAdapter()
     network_input = image_adapter.image_to_array(img)
 
