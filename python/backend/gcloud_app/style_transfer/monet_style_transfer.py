@@ -14,7 +14,6 @@ class MonetStyleTransfer(StyleTransferInterface):
 
         for segment in image_segments:
             # TO-DO: replace mock call with network forward pass
-            segment = segment[0]
             generated_image = self.mock_apply_style(segment)
             generated_image_segments.append(generated_image)
 

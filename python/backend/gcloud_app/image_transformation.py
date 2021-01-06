@@ -19,8 +19,6 @@ def segment_image(image, size):
     width_blocks = img_width//size
 
     response = []
-    for i in range(0,heigth_blocks):
-        response.append([])
     
     for i in range(0,heigth_blocks):
         for j in range(0, width_blocks):
@@ -30,7 +28,7 @@ def segment_image(image, size):
             y1 = y+size
             rectangle = image[y:y1,x:x1]
 
-            response[i].append(rectangle)
+            response.append(rectangle)
 
     return (heigth_blocks, width_blocks), response
 

@@ -1,8 +1,7 @@
 import numpy as np
-import logging
 from testing.tests.test_utils import *
 from backend.gcloud_app.image_adapter import ImageAdapter
-from backend.gcloud_app.image_transformation import resize_image
+from backend.gcloud_app.image_transformation import resize_image, segment_image, reconstruct_image
 from backend.gcloud_app.style_transfer.monet_style_transfer import MonetStyleTransfer
 
 
@@ -33,3 +32,21 @@ def test_style_transfer():
     transformer = MonetStyleTransfer()
     transformed = transformer.apply(input_image)
     assert np.any(input_image != transformed)
+
+
+def test_segment_image():
+    img = load_image("testing/tests/test_img_2.jpg")
+    size = 256
+    segment_block_shape, segments = segment_image(img, size)
+
+    assert segment_block_shape == (2, 7)
+
+
+def test_reconstruct_image():
+    img = load_image("testing/tests/test_img_2.jpg")
+    size = 256
+    segment_block_shape, segments = segment_image(img, size)
+    print(segment_block_shape)
+    reconstructed_img = reconstruct_image(segments, segment_block_shape)
+
+    assert img == reconstructed_img
