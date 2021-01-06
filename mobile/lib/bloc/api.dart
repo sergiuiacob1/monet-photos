@@ -11,7 +11,8 @@ enum APIStatus {
 }
 
 class API {
-  static final _url = "https://aset-monet-photos.ew.r.appspot.com";
+  // static final _url = "https://aset-monet-photos.ew.r.appspot.com";
+  static final _url = "http://10.0.2.2:8080";
 
   static Stream<dynamic> post(PickedFile img) async* {
     yield [APIStatus.sendingRequest, null];
@@ -22,6 +23,8 @@ class API {
       request.files.add(
         http.MultipartFile.fromBytes('file', imgBytes, filename: img.path),
       );
+      final ext = "." + img.path.split(".").last;
+      request.fields.addAll({"style": "monet", "extension": ext});
 
       final response = client.send(request);
       yield [APIStatus.waiting, null];

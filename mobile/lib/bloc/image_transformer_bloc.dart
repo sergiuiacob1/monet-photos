@@ -46,7 +46,7 @@ class ImageTransformerBloc
           yield TransformingFinished(data[1]);
           break;
         case APIStatus.failed:
-          yield TransformingFailed(data[1]);
+          yield TransformingFailed(data[1].toString());
           break;
       }
     }

@@ -8,7 +8,7 @@ from training.model.model_creator import define_composite_model
 
 class ModelSerializer:
     model_names = ['d_model_A', "d_model_B", "g_model_AtoB", "g_model_BtoA"]
-    base_path = './training/generated_models/'
+    base_path = './training/generated_models'
     image_shape = (256, 256, 3)
 
     def serialize(self, models, dataset_name, key):
