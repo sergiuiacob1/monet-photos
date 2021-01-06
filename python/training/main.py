@@ -53,6 +53,7 @@ def load_model_and_train(set_key):
     models = model_serializer.deserialize("monet", set_key)
     model_trainer.load_model_and_train(normalized_real_dataset, normalized_fake_dataset, "monet", models)
 
+
 def load_model_and_show(set_key):
     image_adapter = ImageAdapter()
 
