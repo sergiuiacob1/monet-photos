@@ -1,6 +1,7 @@
 import cv2
+from backend.gcloud_app.exceptions.invalid_request import InvalidRequest
 import numpy as np
-from exceptions.invalid_request import InvalidRequest
+
 
 def resize_image(img):
     dim = (256, 256)
@@ -34,5 +35,20 @@ def segment_image(image, size):
     return (heigth_blocks, width_blocks), response
 
 
-def reconstruct_image(image_segments, shape, size):
-    pass
+def reconstruct_image(image_segments, shape):
+    lines, cols = shape
+    if len(image_segments) != lines * cols:
+        return []
+
+    constructed_lines = []
+
+    for line in range(lines):
+        start_index = line * cols
+        end_index = (line + 1) * cols
+        current_images = np.array(image_segments[start_index:end_index])
+        current_line = np.concatenate(current_images, axis=1)
+        constructed_lines.append(current_line)
+
+    constructed_lines = np.array(constructed_lines)
+
+    return np.concatenate(constructed_lines, axis=0)

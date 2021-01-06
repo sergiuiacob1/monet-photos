@@ -1,4 +1,4 @@
-from image_transformation import *
+from backend.gcloud_app.image_transformation import *
 from cv2 import cv2
 
 

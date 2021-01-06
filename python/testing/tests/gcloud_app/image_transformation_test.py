@@ -1,8 +1,8 @@
 import numpy as np
 from testing.tests.test_utils import *
-from backend.image_adapter import ImageAdapter
-from backend.image_transformation import *
-from backend.style_transfer.monet_style_transfer import MonetStyleTransfer
+from backend.gcloud_app.image_adapter import ImageAdapter
+from backend.gcloud_app.image_transformation import resize_image
+from backend.gcloud_app.style_transfer.monet_style_transfer import MonetStyleTransfer
 
 
 def test_image_resize():

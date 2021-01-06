@@ -1,6 +1,5 @@
 from cv2 import cv2
 from image_adapter import ImageAdapter
-import keras
 import numpy as np
 import logging
 

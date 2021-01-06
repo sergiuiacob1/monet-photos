@@ -82,6 +82,6 @@ def load_model_and_show(set_key):
 
 
 if __name__ == '__main__':
-    create_model_and_train()
-    # load_model_and_show("latest_model")
+    # create_model_and_train()
+    load_model_and_show("latest_model")
     # load_model_and_train('1608663138_50')
