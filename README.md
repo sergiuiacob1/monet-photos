@@ -4,3 +4,6 @@ Monet Photos allows you to transcribe the everyday photos you take into pieces o
 https://docs.google.com/document/d/1I8WyYF6y3lpICueUiKG9uBiiSEiD1bIbQ3nJpMYZp_o
 
 https://trello.com/b/0bsVnzUb/monet-photos
+
+Generated models:
+https://drive.google.com/drive/folders/17BKg3UAa3L9Tx14I_Xo54RsPi61h_j0N?usp=sharing
